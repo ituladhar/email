@@ -321,7 +321,7 @@
         }
 
         .preview-content {
-            background: #f1f5f9; /* Changed to grey to show email boundaries better */
+            background: #f1f5f9;
             border-radius: 0 0 16px 16px;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             border: 1px solid #e2e8f0;
@@ -529,8 +529,8 @@
         let showFooter = true;
         let copied = false;
 
-      
-        const LOGO_URL = "https://s12.gifyu.com/images/b39dH.png" alt="Paramount Wireless";
+        // Logo URL - Updated
+        const LOGO_URL = "https://s12.gifyu.com/images/b39dH.png";
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -608,9 +608,6 @@
 
             let footerHTML = '';
             if (showFooter) {
-                // Outlook-safe footer structure
-                // Using darker colors (#64748b) for better visibility in Outlook
-                // Using 11px font size for readability
                 const labelHTML = data.footerLabel ? `<strong style="color: #334155; font-weight: 700;">${data.footerLabel}</strong> ` : '';
                 
                 footerHTML = `
@@ -702,14 +699,12 @@
         function copyToClipboard() {
             const previewArea = document.getElementById('email-preview');
             
-            // Create a range and select the contents
             const range = document.createRange();
             range.selectNode(previewArea);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
 
             try {
-                // Execute copy command
                 const successful = document.execCommand('copy');
                 
                 if (successful) {
@@ -737,10 +732,9 @@
                 }
             } catch (err) {
                 console.error('Copy failed', err);
-                // Fallback for modern browsers if execCommand fails
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(previewArea.innerHTML).then(() => {
-                         const btn = document.getElementById('copyBtn');
+                        const btn = document.getElementById('copyBtn');
                         const originalContent = btn.innerHTML;
                         btn.classList.remove('primary');
                         btn.classList.add('success');
@@ -758,7 +752,6 @@
                 }
             }
             
-            // Clear selection
             window.getSelection().removeAllRanges();
         }
     </script>
