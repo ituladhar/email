@@ -1,0 +1,240 @@
+import React, { useState, useRef } from 'react';
+import { 
+  Bold, Italic, List, ListOrdered, Type, Copy, Check, Eraser,
+  UserCircle, Globe, Phone, Mail, MousePointer2, Briefcase, MapPin, ExternalLink
+} from 'lucide-react';
+
+/**
+ * Professional Email Builder for Paramount Wireless
+ * Optimized for local Vite + Tailwind CSS development
+ */
+const App = () => {
+  // --- Main Email Content ---
+  const [content, setContent] = useState(`<div>Hello [Name],</div><div><br></div><div>I hope this email finds you well.</div><div><br></div><div>I am reaching out to discuss a potential collaboration between our teams. We have been following your recent developments and believe there is a strong alignment between our current initiatives and your organizational goals.</div><div><br></div><div>Would you have 10 minutes later this week for a brief introductory call?</div><div><br></div><div>Best regards,</div>`);
+  
+  // --- Signature & CTA State ---
+  const [footerData, setFooterData] = useState({
+    name: 'Alex Sterling',
+    title: 'Director of Business Development',
+    market: 'Southeast Region',
+    email: 'a.sterling@p-wireless.com',
+    phone: '(555) 123-4567',
+    website: 'paramountwirelessusa.com',
+    ctaText: 'Visit Our Website',
+    ctaLink: 'https://www.paramountwirelessusa.com/ '
+  });
+
+  const [showCTA, setShowCTA] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const editorRef = useRef(null);
+
+  // --- Editor Functions ---
+  const execCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+    if (editorRef.current) setContent(editorRef.current.innerHTML);
+  };
+
+  const copyToClipboard = () => {
+    const previewArea = document.getElementById('email-preview-container');
+    const range = document.createRange();
+    range.selectNode(previewArea);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    
+    try {
+      document.execCommand('copy');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
+    window.getSelection().removeAllRanges();
+  };
+
+  const websiteUrl = footerData.website.startsWith('http') 
+    ? footerData.website 
+    : `https://${footerData.website}`;
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* --- LEFT SIDE: EDITOR PANEL --- */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          
+          {/* Email Body Editor */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2 font-bold text-slate-700">
+              <Type size={18} className="text-blue-600" /> Message Content
+            </div>
+            
+            <div className="p-2 bg-white border-b border-slate-100 flex flex-wrap gap-1 items-center">
+              <button onClick={() => execCommand('bold')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Bold"><Bold size={18} /></button>
+              <button onClick={() => execCommand('italic')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Italic"><Italic size={18} /></button>
+              <div className="h-6 w-px bg-slate-200 mx-1" />
+              <button onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Bullets"><List size={18} /></button>
+              <button 
+                onClick={() => { if(window.confirm('Clear message?')) { setContent(''); if(editorRef.current) editorRef.current.innerHTML = ''; } }}
+                className="p-2 hover:bg-red-50 text-red-500 rounded ml-auto"
+              ><Eraser size={18} /></button>
+            </div>
+
+            <div 
+              ref={editorRef}
+              contentEditable
+              onInput={(e) => setContent(e.currentTarget.innerHTML)}
+              dangerouslySetInnerHTML={{ __html: content }}
+              className="p-6 min-h-[200px] outline-none prose prose-slate max-w-none bg-white focus:bg-slate-50/30"
+            />
+          </div>
+
+          {/* Sender & CTA Info */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h2 className="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-2">
+              <UserCircle size={18} /> Signature & CTA
+            </h2>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Name</label>
+                <input value={footerData.name} onChange={e => setFooterData({...footerData, name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Title</label>
+                <input value={footerData.title} onChange={e => setFooterData({...footerData, title: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Phone</label>
+                <input value={footerData.phone} onChange={e => setFooterData({...footerData, phone: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Market</label>
+                <input value={footerData.market} onChange={e => setFooterData({...footerData, market: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-400 uppercase">Logo Link (URL)</label>
+              <input value={footerData.website} onChange={e => setFooterData({...footerData, website: e.target.value})} placeholder="e.g. paramountwirelessusa.com" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+            </div>
+            
+            {/* CTA Button Toggle */}
+            <div className="pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Call to Action Button</span>
+                <button 
+                  onClick={() => setShowCTA(!showCTA)}
+                  className={`w-10 h-5 rounded-full p-1 transition-colors ${showCTA ? 'bg-blue-600' : 'bg-slate-300'}`}
+                >
+                  <div className={`w-3 h-3 bg-white rounded-full transition-transform ${showCTA ? 'translate-x-5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+              
+              {showCTA && (
+                <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
+                  <input value={footerData.ctaText} onChange={e => setFooterData({...footerData, ctaText: e.target.value})} placeholder="Button Text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  <input value={footerData.ctaLink} onChange={e => setFooterData({...footerData, ctaLink: e.target.value})} placeholder="Link URL" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Copy Button */}
+          <button 
+            onClick={copyToClipboard}
+            className={`w-full py-5 rounded-2xl font-black text-white shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${copied ? 'bg-green-600' : 'bg-slate-900 hover:bg-slate-800'}`}
+          >
+            {copied ? <Check size={20} /> : <Copy size={20} />}
+            {copied ? 'DRAFT COPIED!' : 'COPY FOR OUTLOOK'}
+          </button>
+        </div>
+
+        {/* --- RIGHT SIDE: LIVE PREVIEW --- */}
+        <div className="lg:col-span-7">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden sticky top-8">
+            <div className="p-3 bg-slate-800 text-white text-[10px] font-mono uppercase tracking-[0.2em] flex justify-between items-center px-6">
+              <span>Outlook Renderer Preview</span>
+              <div className="w-2 h-2 rounded-full bg-slate-600" />
+            </div>
+            
+            <div id="email-preview-container" className="bg-white overflow-auto p-4 md:p-10">
+              <table width="100%" cellPadding="0" cellSpacing="0" style={{ maxWidth: '600px', margin: '0 auto', border: '1px solid #e2e8f0', backgroundColor: '#ffffff', borderCollapse: 'collapse' }}>
+                <tbody>
+                  {/* Header Logo */}
+                  <tr>
+                    <td style={{ padding: '40px 20px 20px 20px', textAlign: 'center' }}>
+                      <a href={websiteUrl} target="_blank" style={{ textDecoration: 'none' }}>
+                        <img src="https://s12.gifyu.com/images/b39dH.png " alt="Paramount Wireless" style={{ height: '100px', maxWidth: '100%', display: 'block', margin: '0 auto', border: 'none' }} />
+                      </a>
+                      <div className="red-line-fade" style={{ height: '2px', width: '70%', margin: '25px auto 0 auto', background: 'linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0))' }}></div>
+                    </td>
+                  </tr>
+
+                  {/* Message Body */}
+                  <tr>
+                    <td style={{ padding: '40px', color: '#1e293b', fontSize: '15.5px', lineHeight: '1.6', fontFamily: 'Arial, sans-serif' }}>
+                      <div dangerouslySetInnerHTML={{ __html: content }} />
+                    </td>
+                  </tr>
+
+                  {/* Optional CTA Button */}
+                  {showCTA && footerData.ctaLink && (
+                    <tr>
+                      <td style={{ padding: '0 40px 40px 40px', textAlign: 'left' }}>
+                        <a href={footerData.ctaLink} style={{ display: 'inline-block', padding: '12px 24px', backgroundColor: '#000000', color: '#ffffff', textDecoration: 'none', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px' }}>
+                          {footerData.ctaText}
+                        </a>
+                      </td>
+                    </tr>
+                  )}
+
+                  {/* Signature Section */}
+                  <tr>
+                    <td style={{ padding: '0 40px' }}>
+                      <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px' }}>
+                        <table width="100%" cellPadding="0" cellSpacing="0">
+                          <tbody>
+                            <tr>
+                              <td width="90" style={{ verticalAlign: 'top', paddingRight: '15px' }}>
+                                <a href={websiteUrl} style={{ border: 'none' }}>
+                                  <img src="https://s12.gifyu.com/images/b39dH.png " alt="Logo" style={{ width: '75px', display: 'block', border: 'none' }} />
+                                </a>
+                              </td>
+                              <td style={{ verticalAlign: 'top', lineHeight: '1.15', fontFamily: 'Arial, sans-serif' }}>
+                                <div style={{ fontSize: '16.5px', fontWeight: 'bold', color: '#000000' }}>{footerData.name || 'Your Name'}</div>
+                                <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>{footerData.title || 'Your Title'}</div>
+                                <div style={{ fontSize: '12px', color: '#475569' }}>{footerData.market || 'Regional Market'}</div>
+                                
+                                <div style={{ marginTop: '0px', fontSize: '11.5px', color: '#475569' }}>
+                                  <a href={`mailto:${footerData.email}`} style={{ color: '#475569', textDecoration: 'none' }}>{footerData.email}</a>
+                                  {footerData.email && footerData.phone && <span style={{ margin: '0 6px', color: '#cbd5e1' }}>|</span>}
+                                  {footerData.phone && <span>{footerData.phone}</span>}
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+
+                  {/* Footer Legal */}
+                  <tr>
+                    <td style={{ padding: '30px 40px 40px 40px', fontSize: '10px', color: '#94a3b8', textAlign: 'center', lineHeight: '1.4' }}>
+                      <div style={{ marginBottom: '8px' }}>
+                        This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.
+                      </div>
+                      © 2026 Paramount Wireless USA. All rights reserved.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
