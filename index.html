@@ -321,19 +321,18 @@
         }
 
         .preview-content {
-            background: #f1f5f9;
+            background: white;
             border-radius: 0 0 16px 16px;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
             border: 1px solid #e2e8f0;
             border-top: none;
             overflow: auto;
             max-height: 90vh;
-            padding: 40px 20px;
         }
 
         #email-preview {
+            padding: 40px;
             background: white;
-            margin: 0 auto;
         }
 
         /* Icons */
@@ -349,20 +348,6 @@
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #f1f5f9;
-        }
-
-        /* Two column layout for footer fields */
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 12px;
-        }
-
-        @media (max-width: 640px) {
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -481,19 +466,13 @@
                             <div class="toggle-switch active" id="footerToggle" onclick="toggleFooter()"></div>
                         </div>
                         <div id="footerFields">
-                            <div class="footer-grid">
-                                <div class="form-group">
-                                    <label>Disclaimer Label</label>
-                                    <input type="text" id="footerLabel" value="Privacy & Confidentiality:" oninput="updatePreview()">
-                                </div>
-                                <div class="form-group">
-                                    <label>Copyright Text</label>
-                                    <input type="text" id="footerCopyright" value="© 2026 Paramount Wireless USA. All rights reserved." oninput="updatePreview()">
-                                </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>Disclaimer Text</label>
+                                <textarea id="footerDisclaimer" oninput="updatePreview()" rows="3">This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.</textarea>
                             </div>
                             <div class="form-group" style="margin-top: 12px;">
-                                <label>Disclaimer Body Text</label>
-                                <textarea id="footerDisclaimer" oninput="updatePreview()" rows="3">This communication is intended solely for the addressee and may contain proprietary information. Unauthorized use, disclosure, or distribution is prohibited. If you received this in error, please notify the sender and delete the original message.</textarea>
+                                <label>Copyright Text</label>
+                                <input type="text" id="footerCopyright" value="© 2026 Paramount Wireless USA. All rights reserved." oninput="updatePreview()">
                             </div>
                         </div>
                     </div>
@@ -528,9 +507,6 @@
         let showCTA = true;
         let showFooter = true;
         let copied = false;
-
-        // Logo URL - Updated
-        const LOGO_URL = "https://s12.gifyu.com/images/b39dH.png";
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -581,7 +557,6 @@
                 website: document.getElementById('sigWebsite').value,
                 ctaText: document.getElementById('ctaText').value,
                 ctaLink: document.getElementById('ctaLink').value,
-                footerLabel: document.getElementById('footerLabel').value,
                 footerDisclaimer: document.getElementById('footerDisclaimer').value,
                 footerCopyright: document.getElementById('footerCopyright').value
             };
@@ -597,8 +572,8 @@
             if (showCTA && data.ctaLink) {
                 ctaHTML = `
                     <tr>
-                        <td style="padding: 0 40px 30px 40px; text-align: left;">
-                            <a href="${data.ctaLink}" style="display: inline-block; padding: 14px 28px; background-color: #0f172a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 14px; font-family: Arial, sans-serif; mso-padding-alt: 14px 28px;">
+                        <td style="padding: 0 40px 40px 40px; text-align: left;">
+                            <a href="${data.ctaLink}" style="display: inline-block; padding: 12px 24px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 13px;">
                                 ${data.ctaText}
                             </a>
                         </td>
@@ -608,51 +583,32 @@
 
             let footerHTML = '';
             if (showFooter) {
-                const labelHTML = data.footerLabel ? `<strong style="color: #334155; font-weight: 700;">${data.footerLabel}</strong> ` : '';
-                
                 footerHTML = `
                     <tr>
-                        <td style="padding: 0;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
-                                <tr>
-                                    <td style="padding: 30px 40px; font-family: Arial, sans-serif; font-size: 11px; line-height: 1.5; color: #64748b; text-align: center;">
-                                        ${ (data.footerLabel || data.footerDisclaimer) ? 
-                                            `<div style="margin-bottom: 12px; max-width: 500px; margin-left: auto; margin-right: auto;">
-                                                ${labelHTML}
-                                                <span style="color: #64748b;">${data.footerDisclaimer}</span>
-                                            </div>` 
-                                            : '' 
-                                        }
-                                        ${data.footerCopyright ? 
-                                            `<div style="color: #94a3b8; font-size: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0; display: inline-block; margin-top: 10px;">
-                                                ${data.footerCopyright}
-                                            </div>` 
-                                            : '' 
-                                        }
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="padding: 30px 40px 40px 40px; font-size: 10px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                            ${data.footerDisclaimer ? `<div style="margin-bottom: 8px;">${data.footerDisclaimer}</div>` : ''}
+                            ${data.footerCopyright ? `<div>${data.footerCopyright}</div>` : ''}
                         </td>
                     </tr>
                 `;
             }
 
             const previewHTML = `
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; background-color: #ffffff; border-collapse: collapse; font-family: Arial, sans-serif;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; background-color: #ffffff; border-collapse: collapse;">
                     <tbody>
                         <!-- Header Logo -->
                         <tr>
-                            <td style="padding: 40px 20px 20px 20px; text-align: center; background-color: #ffffff;">
-                                <a href="${websiteUrl}" target="_blank" style="text-decoration: none; border: none;">
-                                    <img src="${LOGO_URL}" alt="Paramount Wireless" style="height: 80px; max-width: 250px; display: block; margin: 0 auto; border: none; outline: none; text-decoration: none;">
+                            <td style="padding: 40px 20px 20px 20px; text-align: center;">
+                                <a href="${websiteUrl}" target="_blank" style="text-decoration: none;">
+                                    <img src="https://s12.gifyu.com/images/b39dH.png" alt="Paramount Wireless" style="height: 100px; max-width: 100%; display: block; margin: 0 auto; border: none;">
                                 </a>
-                                <div style="height: 2px; width: 60px; margin: 25px auto 0 auto; background: #2563eb;"></div>
+                                <div style="height: 2px; width: 70%; margin: 25px auto 0 auto; background: linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0));"></div>
                             </td>
                         </tr>
 
                         <!-- Message Body -->
                         <tr>
-                            <td style="padding: 30px 40px; color: #1e293b; font-size: 15px; line-height: 1.6; font-family: Arial, sans-serif;">
+                            <td style="padding: 40px; color: #1e293b; font-size: 15.5px; line-height: 1.6; font-family: Arial, sans-serif;">
                                 ${content}
                             </td>
                         </tr>
@@ -661,29 +617,31 @@
 
                         <!-- Signature Section -->
                         <tr>
-                            <td style="padding: 0 40px 30px 40px;">
-                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #e2e8f0; padding-top: 20px;">
-                                    <tr>
-                                        <td width="80" style="vertical-align: top; padding-right: 20px; padding-top: 15px;">
-                                            <a href="${websiteUrl}" style="border: none; text-decoration: none;">
-                                                <img src="${LOGO_URL}" alt="Logo" style="width: 60px; display: block; border: none; outline: none;">
-                                            </a>
-                                        </td>
-                                        <td style="vertical-align: top; line-height: 1.4; font-family: Arial, sans-serif; padding-top: 15px;">
-                                            <div style="font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 2px;">${data.name || 'Your Name'}</div>
-                                            <div style="font-size: 13px; color: #2563eb; font-weight: 600; margin-bottom: 4px;">${data.title || 'Your Title'}</div>
-                                            <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">${data.market || 'Regional Market'}</div>
-                                            
-                                            <div style="font-size: 12px; color: #475569;">
-                                                <a href="mailto:${data.email}" style="color: #475569; text-decoration: none;">${data.email}</a>
-                                                ${data.email && data.phone ? '<span style="margin: 0 8px; color: #cbd5e1;">|</span>' : ''}
-                                                ${data.phone ? `<span>${data.phone}</span>` : ''}
-                                                ${data.phone && data.website ? '<span style="margin: 0 8px; color: #cbd5e1;">|</span>' : ''}
-                                                ${data.website ? `<a href="${websiteUrl}" style="color: #475569; text-decoration: none;">${data.website.replace(/^https?:\/\//, '')}</a>` : ''}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td style="padding: 0 40px;">
+                                <div style="border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td width="90" style="vertical-align: top; padding-right: 15px;">
+                                                    <a href="${websiteUrl}" style="border: none;">
+                                                        <img src="https://s12.gifyu.com/images/b39dH.png" alt="Logo" style="width: 75px; display: block; border: none;">
+                                                    </a>
+                                                </td>
+                                                <td style="vertical-align: top; line-height: 1.15; font-family: Arial, sans-serif;">
+                                                    <div style="font-size: 16.5px; font-weight: bold; color: #000000;">${data.name || 'Your Name'}</div>
+                                                    <div style="font-size: 13px; color: #475569; font-weight: 600;">${data.title || 'Your Title'}</div>
+                                                    <div style="font-size: 12px; color: #475569;">${data.market || 'Regional Market'}</div>
+                                                    
+                                                    <div style="margin-top: 0px; font-size: 11.5px; color: #475569;">
+                                                        <a href="mailto:${data.email}" style="color: #475569; text-decoration: none;">${data.email}</a>
+                                                        ${data.email && data.phone ? '<span style="margin: 0 6px; color: #cbd5e1;">|</span>' : ''}
+                                                        ${data.phone ? `<span>${data.phone}</span>` : ''}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </td>
                         </tr>
 
@@ -698,63 +656,41 @@
         // Copy to Clipboard
         function copyToClipboard() {
             const previewArea = document.getElementById('email-preview');
-            
             const range = document.createRange();
             range.selectNode(previewArea);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
 
             try {
-                const successful = document.execCommand('copy');
+                document.execCommand('copy');
+                copied = true;
+                const btn = document.getElementById('copyBtn');
+                btn.classList.remove('primary');
+                btn.classList.add('success');
+                btn.innerHTML = `
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>DRAFT COPIED!</span>
+                `;
                 
-                if (successful) {
-                    copied = true;
-                    const btn = document.getElementById('copyBtn');
-                    const originalContent = btn.innerHTML;
-                    
-                    btn.classList.remove('primary');
-                    btn.classList.add('success');
+                setTimeout(() => {
+                    copied = false;
+                    btn.classList.remove('success');
+                    btn.classList.add('primary');
                     btn.innerHTML = `
                         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
-                        <span>COPIED TO CLIPBOARD!</span>
+                        <span>COPY FOR OUTLOOK</span>
                     `;
-                    
-                    setTimeout(() => {
-                        copied = false;
-                        btn.classList.remove('success');
-                        btn.classList.add('primary');
-                        btn.innerHTML = originalContent;
-                    }, 2500);
-                } else {
-                    throw new Error('Copy command failed');
-                }
+                }, 2000);
             } catch (err) {
                 console.error('Copy failed', err);
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(previewArea.innerHTML).then(() => {
-                        const btn = document.getElementById('copyBtn');
-                        const originalContent = btn.innerHTML;
-                        btn.classList.remove('primary');
-                        btn.classList.add('success');
-                        btn.innerHTML = `<span>COPIED!</span>`;
-                        setTimeout(() => {
-                            btn.classList.remove('success');
-                            btn.classList.add('primary');
-                            btn.innerHTML = originalContent;
-                        }, 2000);
-                    }).catch(err => {
-                        alert('Failed to copy automatically. Please select the email preview manually and press Ctrl+C.');
-                    });
-                } else {
-                    alert('Failed to copy automatically. Please select the email preview manually and press Ctrl+C.');
-                }
+                alert('Copy failed. Please try selecting and copying manually.');
             }
-            
             window.getSelection().removeAllRanges();
         }
     </script>
 </body>
 </html>
-
