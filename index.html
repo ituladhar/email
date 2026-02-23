@@ -167,15 +167,21 @@
             letter-spacing: 0.05em;
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea {
             padding: 10px 12px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.2s;
+            font-family: inherit;
         }
 
-        .form-group input:focus {
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: #3b82f6;
         }
@@ -336,6 +342,13 @@
             display: inline-block;
             vertical-align: middle;
         }
+
+        /* Footer Toggle Section */
+        .footer-toggle {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
     </style>
 </head>
 <body>
@@ -428,6 +441,7 @@
                         </div>
                     </div>
 
+                    <!-- CTA Toggle -->
                     <div class="toggle-section">
                         <div class="toggle-header">
                             <span>Call to Action Button</span>
@@ -441,6 +455,24 @@
                             <div class="form-group">
                                 <label>Link URL</label>
                                 <input type="text" id="ctaLink" value="https://www.paramountwirelessusa.com/" oninput="updatePreview()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Toggle -->
+                    <div class="footer-toggle">
+                        <div class="toggle-header">
+                            <span>Footer / Disclaimer</span>
+                            <div class="toggle-switch active" id="footerToggle" onclick="toggleFooter()"></div>
+                        </div>
+                        <div id="footerFields">
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>Disclaimer Text</label>
+                                <textarea id="footerDisclaimer" oninput="updatePreview()" rows="3">This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.</textarea>
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>Copyright Text</label>
+                                <input type="text" id="footerCopyright" value="© 2026 Paramount Wireless USA. All rights reserved." oninput="updatePreview()">
                             </div>
                         </div>
                     </div>
@@ -473,6 +505,7 @@
     <script>
         // State
         let showCTA = true;
+        let showFooter = true;
         let copied = false;
 
         // Initialize
@@ -505,6 +538,14 @@
             updatePreview();
         }
 
+        // Toggle Footer
+        function toggleFooter() {
+            showFooter = !showFooter;
+            document.getElementById('footerToggle').classList.toggle('active');
+            document.getElementById('footerFields').classList.toggle('hidden');
+            updatePreview();
+        }
+
         // Get Form Values
         function getFormData() {
             return {
@@ -515,7 +556,9 @@
                 email: document.getElementById('sigEmail').value,
                 website: document.getElementById('sigWebsite').value,
                 ctaText: document.getElementById('ctaText').value,
-                ctaLink: document.getElementById('ctaLink').value
+                ctaLink: document.getElementById('ctaLink').value,
+                footerDisclaimer: document.getElementById('footerDisclaimer').value,
+                footerCopyright: document.getElementById('footerCopyright').value
             };
         }
 
@@ -533,6 +576,18 @@
                             <a href="${data.ctaLink}" style="display: inline-block; padding: 12px 24px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 13px;">
                                 ${data.ctaText}
                             </a>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            let footerHTML = '';
+            if (showFooter) {
+                footerHTML = `
+                    <tr>
+                        <td style="padding: 30px 40px 40px 40px; font-size: 10px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                            ${data.footerDisclaimer ? `<div style="margin-bottom: 8px;">${data.footerDisclaimer}</div>` : ''}
+                            ${data.footerCopyright ? `<div>${data.footerCopyright}</div>` : ''}
                         </td>
                     </tr>
                 `;
@@ -590,15 +645,7 @@
                             </td>
                         </tr>
 
-                        <!-- Footer Legal -->
-                        <tr>
-                            <td style="padding: 30px 40px 40px 40px; font-size: 10px; color: #94a3b8; text-align: center; line-height: 1.4;">
-                                <div style="margin-bottom: 8px;">
-                                    This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.
-                                </div>
-                                © 2026 Paramount Wireless USA. All rights reserved.
-                            </td>
-                        </tr>
+                        ${footerHTML}
                     </tbody>
                 </table>
             `;
