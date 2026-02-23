@@ -1,0 +1,359 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Bold, 
+  Italic, 
+  List, 
+  ListOrdered, 
+  Type, 
+  Copy, 
+  Check, 
+  Eraser,
+  UserCircle,
+  Mail,
+  Briefcase,
+  MapPin,
+  Globe,
+  Phone,
+  ExternalLink,
+  MousePointer2
+} from 'lucide-react';
+
+const App = () => {
+  // Main Email Body Content
+  const [content, setContent] = useState(`<div>Hello [Name],</div><div><br></div><div>I hope this email finds you well.</div><div><br></div><div>I am reaching out to discuss a potential collaboration between our teams. We have been following your recent developments and believe there is a strong alignment between our current initiatives and your organizational goals.</div><div><br></div><div>Would you have 10 minutes later this week for a brief introductory call? I would love to explore how <b>Paramount Wireless</b> can support your upcoming projects.</div><div><br></div><div>Best regards,</div>`);
+  
+  // Footer / Signature Details
+  const [footerData, setFooterData] = useState({
+    name: 'Alex Sterling',
+    title: 'Director of Business Development',
+    market: 'Southeast Region',
+    email: 'a.sterling@p-wireless.com',
+    phone: '(555) 123-4567',
+    website: 'paramountwirelessusa.com',
+    ctaText: 'Visit Our Website',
+    ctaLink: 'https://www.paramountwirelessusa.com/'
+  });
+
+  const [showCTA, setShowCTA] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [fontFamily, setFontFamily] = useState('sans-serif');
+  const editorRef = useRef(null);
+
+  const execCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+    if (editorRef.current) {
+      setContent(editorRef.current.innerHTML);
+    }
+  };
+
+  const handleInput = (e) => {
+    setContent(e.currentTarget.innerHTML);
+  };
+
+  const handleFooterChange = (e) => {
+    const { name, value } = e.target;
+    setFooterData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const copyToClipboard = () => {
+    const previewArea = document.getElementById('email-preview-container');
+    const range = document.createRange();
+    range.selectNode(previewArea);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    
+    try {
+      document.execCommand('copy');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Unable to copy', err);
+    }
+    window.getSelection().removeAllRanges();
+  };
+
+  const fonts = [
+    { name: 'Sans Serif', value: 'ui-sans-serif, system-ui, -apple-system, sans-serif' },
+    { name: 'Serif', value: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' },
+    { name: 'Monospace', value: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' },
+    { name: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+    { name: 'Verdana', value: 'Verdana, Geneva, sans-serif' }
+  ];
+
+  const websiteUrl = footerData.website.startsWith('http') ? footerData.website : `https://${footerData.website}`;
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-slate-900 font-sans p-4 md:p-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left Side: Editors */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          
+          {/* 1. Body Editor */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <Type size={20} className="text-blue-600" />
+                Email Content
+              </h2>
+            </div>
+
+            <div className="p-2 bg-white border-b border-slate-100 flex flex-wrap gap-1 items-center">
+              <select 
+                onChange={(e) => {
+                  setFontFamily(e.target.value);
+                  execCommand('fontName', e.target.value);
+                }}
+                className="text-sm border border-slate-200 rounded px-2 py-1 bg-white hover:bg-slate-50 outline-none cursor-pointer"
+              >
+                {fonts.map(f => <option key={f.value} value={f.value}>{f.name}</option>)}
+              </select>
+              <div className="h-6 w-px bg-slate-200 mx-1" />
+              <button onClick={() => execCommand('bold')} className="p-2 hover:bg-slate-100 rounded" title="Bold"><Bold size={16} /></button>
+              <button onClick={() => execCommand('italic')} className="p-2 hover:bg-slate-100 rounded" title="Italic"><Italic size={16} /></button>
+              <div className="h-6 w-px bg-slate-200 mx-1" />
+              <button onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-slate-100 rounded" title="Bullets"><List size={16} /></button>
+              <button 
+                onClick={() => { if(window.confirm('Clear content?')) { setContent(''); if(editorRef.current) editorRef.current.innerHTML = ''; } }} 
+                className="p-2 hover:bg-red-50 text-red-500 rounded ml-auto"
+              >
+                <Eraser size={16} />
+              </button>
+            </div>
+
+            <div 
+              ref={editorRef}
+              contentEditable
+              onInput={handleInput}
+              dangerouslySetInnerHTML={{ __html: content }}
+              className="p-5 min-h-[200px] outline-none prose prose-slate max-w-none focus:ring-2 focus:ring-blue-50"
+              style={{ fontFamily }}
+            />
+          </div>
+
+          {/* 2. Signature Editor */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <UserCircle size={20} className="text-blue-600" />
+                Signature & CTA Details
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 uppercase">Your Name</label>
+                  <div className="relative">
+                    <UserCircle className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input name="name" value={footerData.name} onChange={handleFooterChange} className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 uppercase">Job Title</label>
+                  <div className="relative">
+                    <Briefcase className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input name="title" value={footerData.title} onChange={handleFooterChange} className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input name="phone" value={footerData.phone} onChange={handleFooterChange} className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 uppercase">Market</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input name="market" value={footerData.market} onChange={handleFooterChange} className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-500 uppercase">Logo Link (Website URL)</label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                  <input name="website" value={footerData.website} onChange={handleFooterChange} placeholder="paramountwirelessusa.com" className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                </div>
+              </div>
+
+              {/* CTA Section */}
+              <div className="pt-2 mt-2 border-t border-slate-100">
+                <div className="flex justify-between items-center mb-3">
+                    <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest block">Button (Call to Action)</label>
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors">INCLUDE BUTTON</span>
+                        <input 
+                            type="checkbox" 
+                            checked={showCTA} 
+                            onChange={(e) => setShowCTA(e.target.checked)}
+                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        />
+                    </label>
+                </div>
+                
+                <div className={`grid grid-cols-2 gap-4 transition-opacity duration-200 ${showCTA ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Button Text</label>
+                    <div className="relative">
+                      <MousePointer2 className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                      <input name="ctaText" value={footerData.ctaText} onChange={handleFooterChange} placeholder="e.g. Visit Website" className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Button Link</label>
+                    <div className="relative">
+                      <ExternalLink className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                      <input name="ctaLink" value={footerData.ctaLink} onChange={handleFooterChange} placeholder="https://..." className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors" />
+                    </div>
+                  </div>
+                </div>
+                {!showCTA && <p className="text-[10px] text-red-400 mt-2 italic font-medium">Button is disabled and will not appear in the preview or copied text.</p>}
+              </div>
+            </div>
+          </div>
+
+          <button 
+            onClick={copyToClipboard}
+            className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-[0.98] ${
+              copied ? 'bg-green-600 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white'
+            }`}
+          >
+            {copied ? <Check size={20} /> : <Copy size={20} />}
+            {copied ? 'Copied to Clipboard!' : 'Copy for Outlook'}
+          </button>
+        </div>
+
+        {/* Right Side: Preview */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
+          <div className="sticky top-8">
+            <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden min-h-[600px]">
+              <div className="p-3 bg-slate-800 text-white text-xs font-mono uppercase tracking-widest flex justify-between items-center">
+                <span>Live Outlook Preview</span>
+                <div className="flex gap-1 items-center">
+                  <div className="w-2 h-2 rounded-full bg-slate-600" />
+                </div>
+              </div>
+              
+              <div id="email-preview-container" className="bg-white overflow-auto p-4 md:p-8">
+                <table width="100%" cellPadding="0" cellSpacing="0" style={{ maxWidth: '600px', margin: '0 auto', border: '1px solid #e2e8f0', fontFamily: 'Arial, sans-serif' }}>
+                  <tbody>
+                    {/* Header - Logo is now hyperlinked */}
+                    <tr>
+                      <td style={{ backgroundColor: '#ffffff', padding: '40px 20px 20px 20px', textAlign: 'center' }}>
+                        <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', border: 'none' }}>
+                          <img 
+                            src="https://s12.gifyu.com/images/b39dH.png" 
+                            alt="Logo" 
+                            style={{ height: '100px', maxWidth: '100%', display: 'block', margin: '0 auto', border: 'none' }} 
+                          />
+                        </a>
+                        <div style={{
+                          height: '2px',
+                          width: '70%',
+                          margin: '25px auto 0 auto',
+                          background: 'linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0))'
+                        }}></div>
+                      </td>
+                    </tr>
+
+                    {/* Main Content Body */}
+                    <tr>
+                      <td style={{ padding: '40px', color: '#1e293b', fontSize: '15px', lineHeight: '1.6' }}>
+                        <div style={{ fontFamily }} dangerouslySetInnerHTML={{ __html: content }} />
+                      </td>
+                    </tr>
+
+                    {/* CTA Button Block */}
+                    {showCTA && footerData.ctaLink && footerData.ctaLink.trim() !== '' && (
+                      <tr>
+                        <td style={{ padding: '0 40px 40px 40px', textAlign: 'left' }}>
+                          <a 
+                            href={footerData.ctaLink} 
+                            style={{ 
+                              display: 'inline-block', 
+                              padding: '12px 24px', 
+                              backgroundColor: '#000000', 
+                              color: '#ffffff', 
+                              textDecoration: 'none', 
+                              borderRadius: '4px', 
+                              fontWeight: 'bold', 
+                              fontSize: '13px' 
+                            }}
+                          >
+                            {footerData.ctaText || 'Learn More'}
+                          </a>
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* Signature Section */}
+                    <tr>
+                      <td style={{ padding: '0 40px' }}>
+                        <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px' }}>
+                          <table width="100%" cellPadding="0" cellSpacing="0">
+                            <tbody>
+                              <tr>
+                                {/* Mini Logo - Hyperlinked */}
+                                <td width="90" style={{ verticalAlign: 'top', paddingRight: '15px' }}>
+                                  <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', border: 'none' }}>
+                                    <img src="https://s12.gifyu.com/images/b39dH.png" alt="Logo" style={{ width: '75px', display: 'block', border: 'none' }} />
+                                  </a>
+                                </td>
+                                <td style={{ verticalAlign: 'top', lineHeight: '1.1' }}>
+                                  <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#000000', marginBottom: '0px' }}>
+                                    {footerData.name || 'Your Name'}
+                                  </div>
+                                  <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
+                                    {footerData.title || 'Your Title'}
+                                  </div>
+                                  <div style={{ fontSize: '12px', color: '#475569', marginTop: '0px' }}>
+                                    {footerData.market || 'Southeast Region'}
+                                  </div>
+                                  <div style={{ marginTop: '0px', fontSize: '11px', color: '#475569' }}>
+                                    <a href={`mailto:${footerData.email}`} style={{ color: '#475569', textDecoration: 'none' }}>
+                                      {footerData.email}
+                                    </a>
+                                    {footerData.email && footerData.phone && (
+                                      <span style={{ margin: '0 6px', color: '#cbd5e1' }}>|</span>
+                                    )}
+                                    {footerData.phone && (
+                                      <span style={{ color: '#475569' }}>{footerData.phone}</span>
+                                    )}
+                                  </div>
+                                  {/* Website text removed as requested */}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* General Legal Footer */}
+                    <tr>
+                      <td style={{ padding: '30px 40px 40px 40px', fontSize: '10px', color: '#94a3b8', textAlign: 'center', lineHeight: '1.4' }}>
+                        <div style={{ marginBottom: '4px' }}>
+                          This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.
+                        </div>
+                        © 2026 Paramount Wireless USA. All rights reserved.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
+              
