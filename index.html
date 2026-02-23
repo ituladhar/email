@@ -594,13 +594,9 @@
                 ctaHTML = `
                     <tr>
                         <td style="padding: 0 40px 40px 40px; text-align: left;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="background-color: #000000; border-radius: 4px; text-align: center;">
-                                        <a href="${data.ctaLink}" style="display: inline-block; padding: 12px 24px; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; font-family: Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">${data.ctaText}</a>
-                                    </td>
-                                </tr>
-                            </table>
+                            <a href="${data.ctaLink}" style="display: inline-block; padding: 12px 24px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 13px;">
+                                ${data.ctaText}
+                            </a>
                         </td>
                     </tr>
                 `;
@@ -608,47 +604,27 @@
 
             let footerHTML = '';
             if (showFooter) {
-                // Use <strong> and <font> tags for Outlook compatibility instead of CSS
-                const labelHTML = data.footerLabel ? `<strong style="font-weight: 600;"><font face="Arial" size="1" color="#94a3b8">${data.footerLabel}</font></strong>` : '';
-                const bodyHTML = data.footerDisclaimer ? `<font face="Arial" size="1" color="#94a3b8">${data.footerDisclaimer}</font>` : '';
-                const copyrightHTML = data.footerCopyright ? `<font face="Arial" size="1" color="#94a3b8">${data.footerCopyright}</font>` : '';
-                
+                const labelHTML = data.footerLabel ? `<span style="font-weight: 600;">${data.footerLabel}</span> ` : '';
                 footerHTML = `
                     <tr>
-                        <td style="padding: 30px 40px 40px 40px; font-family: Arial, sans-serif; text-align: center; line-height: 1.4;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="padding-bottom: 8px; font-size: 10px;">
-                                        ${labelHTML}${labelHTML && bodyHTML ? ' ' : ''}${bodyHTML}
-                                    </td>
-                                </tr>
-                                ${copyrightHTML ? `
-                                <tr>
-                                    <td style="font-size: 10px;">
-                                        ${copyrightHTML}
-                                    </td>
-                                </tr>
-                                ` : ''}
-                            </table>
+                        <td style="padding: 30px 40px 40px 40px; font-size: 10px; color: #94a3b8; text-align: center; line-height: 1.4;">
+                            ${(data.footerLabel || data.footerDisclaimer) ? `<div style="margin-bottom: 8px;">${labelHTML}${data.footerDisclaimer}</div>` : ''}
+                            ${data.footerCopyright ? `<div>${data.footerCopyright}</div>` : ''}
                         </td>
                     </tr>
                 `;
             }
 
             const previewHTML = `
-                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; background-color: #ffffff; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; background-color: #ffffff; border-collapse: collapse;">
                     <tbody>
                         <!-- Header Logo -->
                         <tr>
                             <td style="padding: 40px 20px 20px 20px; text-align: center;">
                                 <a href="${websiteUrl}" target="_blank" style="text-decoration: none;">
-                                    <img src="https://s12.gifyu.com/images/b39dH.png" alt="Paramount Wireless" width="200" style="height: 100px; max-width: 100%; display: block; margin: 0 auto; border: none; -ms-interpolation-mode: bicubic;">
+                                    <img src="https://s12.gifyu.com/images/b39dH.png" alt="Paramount Wireless" style="height: 100px; max-width: 100%; display: block; margin: 0 auto; border: none;">
                                 </a>
-                                <table role="presentation" width="70%" cellpadding="0" cellspacing="0" border="0" style="margin: 25px auto 0 auto;">
-                                    <tr>
-                                        <td height="2" style="background: linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0)); font-size: 0; line-height: 0;">&nbsp;</td>
-                                    </tr>
-                                </table>
+                                <div style="height: 2px; width: 70%; margin: 25px auto 0 auto; background: linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0));"></div>
                             </td>
                         </tr>
 
@@ -664,35 +640,30 @@
                         <!-- Signature Section -->
                         <tr>
                             <td style="padding: 0 40px;">
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                                    <tr>
-                                        <td width="90" style="vertical-align: top; padding-right: 15px;">
-                                            <a href="${websiteUrl}" style="border: none; text-decoration: none;">
-                                                <img src="https://s12.gifyu.com/images/b39dH.png" alt="Logo" width="75" style="width: 75px; display: block; border: none; -ms-interpolation-mode: bicubic;">
-                                            </a>
-                                        </td>
-                                        <td style="vertical-align: top; line-height: 1.15; font-family: Arial, sans-serif;">
-                                            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                                                <tr>
-                                                    <td style="font-size: 16.5px; font-weight: bold; color: #000000; font-family: Arial, sans-serif;">${data.name || 'Your Name'}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 13px; color: #475569; font-weight: 600; font-family: Arial, sans-serif;">${data.title || 'Your Title'}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 12px; color: #475569; font-family: Arial, sans-serif;">${data.market || 'Regional Market'}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 11.5px; color: #475569; font-family: Arial, sans-serif; padding-top: 0px;">
-                                                        <a href="mailto:${data.email}" style="color: #475569; text-decoration: none; font-family: Arial, sans-serif;">${data.email}</a>
-                                                        ${data.email && data.phone ? '<span style="margin: 0 6px; color: #cbd5e1; font-family: Arial, sans-serif;">|</span>' : ''}
-                                                        ${data.phone ? `<span style="font-family: Arial, sans-serif;">${data.phone}</span>` : ''}
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div style="border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td width="90" style="vertical-align: top; padding-right: 15px;">
+                                                    <a href="${websiteUrl}" style="border: none;">
+                                                        <img src="https://s12.gifyu.com/images/b39dH.png" alt="Logo" style="width: 75px; display: block; border: none;">
+                                                    </a>
+                                                </td>
+                                                <td style="vertical-align: top; line-height: 1.15; font-family: Arial, sans-serif;">
+                                                    <div style="font-size: 16.5px; font-weight: bold; color: #000000;">${data.name || 'Your Name'}</div>
+                                                    <div style="font-size: 13px; color: #475569; font-weight: 600;">${data.title || 'Your Title'}</div>
+                                                    <div style="font-size: 12px; color: #475569;">${data.market || 'Regional Market'}</div>
+                                                    
+                                                    <div style="margin-top: 0px; font-size: 11.5px; color: #475569;">
+                                                        <a href="mailto:${data.email}" style="color: #475569; text-decoration: none;">${data.email}</a>
+                                                        ${data.email && data.phone ? '<span style="margin: 0 6px; color: #cbd5e1;">|</span>' : ''}
+                                                        ${data.phone ? `<span>${data.phone}</span>` : ''}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </td>
                         </tr>
 
