@@ -56,12 +56,17 @@ const App = () => {
     : `https://${footerData.website}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans antialiased">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* --- LEFT SIDE: EDITOR PANEL --- */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Email Architect</h1>
+            <p className="text-slate-500 text-sm italic font-medium">Drafting professional invites for Paramount Wireless.</p>
+          </div>
+
           {/* Email Body Editor */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2 font-bold text-slate-700">
@@ -69,13 +74,14 @@ const App = () => {
             </div>
             
             <div className="p-2 bg-white border-b border-slate-100 flex flex-wrap gap-1 items-center">
-              <button onClick={() => execCommand('bold')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Bold"><Bold size={18} /></button>
-              <button onClick={() => execCommand('italic')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Italic"><Italic size={18} /></button>
+              <button onClick={() => execCommand('bold')} className="p-2 hover:bg-slate-100 rounded transition-colors text-slate-700" title="Bold"><Bold size={18} /></button>
+              <button onClick={() => execCommand('italic')} className="p-2 hover:bg-slate-100 rounded transition-colors text-slate-700" title="Italic"><Italic size={18} /></button>
               <div className="h-6 w-px bg-slate-200 mx-1" />
-              <button onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-slate-100 rounded transition-colors" title="Bullets"><List size={18} /></button>
+              <button onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-slate-100 rounded transition-colors text-slate-700" title="Bullets"><List size={18} /></button>
               <button 
                 onClick={() => { if(window.confirm('Clear message?')) { setContent(''); if(editorRef.current) editorRef.current.innerHTML = ''; } }}
-                className="p-2 hover:bg-red-50 text-red-500 rounded ml-auto"
+                className="p-2 hover:bg-red-50 text-red-500 rounded ml-auto transition-colors"
+                title="Clear Editor"
               ><Eraser size={18} /></button>
             </div>
 
@@ -84,7 +90,8 @@ const App = () => {
               contentEditable
               onInput={(e) => setContent(e.currentTarget.innerHTML)}
               dangerouslySetInnerHTML={{ __html: content }}
-              className="p-6 min-h-[200px] outline-none prose prose-slate max-w-none bg-white focus:bg-slate-50/30"
+              className="p-6 min-h-[250px] outline-none prose prose-slate max-w-none bg-white focus:bg-slate-50/20 transition-colors text-slate-800 leading-relaxed"
+              style={{ fontFamily: 'Arial, sans-serif' }}
             />
           </div>
 
@@ -96,26 +103,29 @@ const App = () => {
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Name</label>
-                <input value={footerData.name} onChange={e => setFooterData({...footerData, name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Name</label>
+                <input value={footerData.name} onChange={e => setFooterData({...footerData, name: e.target.value})} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-blue-500 focus:bg-white outline-none transition-all" />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Title</label>
-                <input value={footerData.title} onChange={e => setFooterData({...footerData, title: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Job Title</label>
+                <input value={footerData.title} onChange={e => setFooterData({...footerData, title: e.target.value})} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-blue-500 focus:bg-white outline-none transition-all" />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Phone</label>
-                <input value={footerData.phone} onChange={e => setFooterData({...footerData, phone: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Phone</label>
+                <input value={footerData.phone} onChange={e => setFooterData({...footerData, phone: e.target.value})} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-blue-500 focus:bg-white outline-none transition-all" />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Market</label>
-                <input value={footerData.market} onChange={e => setFooterData({...footerData, market: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Market</label>
+                <input value={footerData.market} onChange={e => setFooterData({...footerData, market: e.target.value})} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-blue-500 focus:bg-white outline-none transition-all" />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Logo Link (URL)</label>
-              <input value={footerData.website} onChange={e => setFooterData({...footerData, website: e.target.value})} placeholder="e.g. paramountwirelessusa.com" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Website (Linked to Logo)</label>
+              <div className="relative">
+                <Globe size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                <input value={footerData.website} onChange={e => setFooterData({...footerData, website: e.target.value})} placeholder="paramountwirelessusa.com" className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-blue-500 focus:bg-white outline-none transition-all" />
+              </div>
             </div>
             
             {/* CTA Button Toggle */}
@@ -132,8 +142,8 @@ const App = () => {
               
               {showCTA && (
                 <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
-                  <input value={footerData.ctaText} onChange={e => setFooterData({...footerData, ctaText: e.target.value})} placeholder="Button Text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                  <input value={footerData.ctaLink} onChange={e => setFooterData({...footerData, ctaLink: e.target.value})} placeholder="Link URL" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  <input value={footerData.ctaText} onChange={e => setFooterData({...footerData, ctaText: e.target.value})} placeholder="Button Text" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
+                  <input value={footerData.ctaLink} onChange={e => setFooterData({...footerData, ctaLink: e.target.value})} placeholder="Link URL" className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-blue-500 outline-none" />
                 </div>
               )}
             </div>
@@ -142,7 +152,7 @@ const App = () => {
           {/* Copy Button */}
           <button 
             onClick={copyToClipboard}
-            className={`w-full py-5 rounded-2xl font-black text-white shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${copied ? 'bg-green-600' : 'bg-slate-900 hover:bg-slate-800'}`}
+            className={`w-full py-5 rounded-2xl font-black text-white shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${copied ? 'bg-green-600 scale-[1.02]' : 'bg-slate-900 hover:bg-slate-800'}`}
           >
             {copied ? <Check size={20} /> : <Copy size={20} />}
             {copied ? 'DRAFT COPIED!' : 'COPY FOR OUTLOOK'}
@@ -154,7 +164,7 @@ const App = () => {
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden sticky top-8">
             <div className="p-3 bg-slate-800 text-white text-[10px] font-mono uppercase tracking-[0.2em] flex justify-between items-center px-6">
               <span>Outlook Renderer Preview</span>
-              <div className="w-2 h-2 rounded-full bg-slate-600" />
+              <div className="w-2 h-2 rounded-full bg-slate-600 shadow-inner" />
             </div>
             
             <div id="email-preview-container" className="bg-white overflow-auto p-4 md:p-10">
@@ -162,11 +172,11 @@ const App = () => {
                 <tbody>
                   {/* Header Logo */}
                   <tr>
-                    <td style={{ padding: '40px 20px 20px 20px', textAlign: 'center' }}>
+                    <td style={{ padding: '45px 20px 25px 20px', textAlign: 'center' }}>
                       <a href={websiteUrl} target="_blank" style={{ textDecoration: 'none' }}>
                         <img src="https://s12.gifyu.com/images/b39dH.png" alt="Paramount Wireless" style={{ height: '100px', maxWidth: '100%', display: 'block', margin: '0 auto', border: 'none' }} />
                       </a>
-                      <div style={{ height: '2px', width: '70%', margin: '25px auto 0 auto', background: 'linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0))' }}></div>
+                      <div style={{ height: '2px', width: '65%', margin: '25px auto 0 auto', background: 'linear-gradient(to right, rgba(239, 68, 68, 0), rgba(239, 68, 68, 1), rgba(239, 68, 68, 0))' }}></div>
                     </td>
                   </tr>
 
@@ -180,8 +190,8 @@ const App = () => {
                   {/* Optional CTA Button */}
                   {showCTA && footerData.ctaLink && (
                     <tr>
-                      <td style={{ padding: '0 40px 40px 40px', textAlign: 'left' }}>
-                        <a href={footerData.ctaLink} style={{ display: 'inline-block', padding: '12px 24px', backgroundColor: '#000000', color: '#ffffff', textDecoration: 'none', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px' }}>
+                      <td style={{ padding: '0 40px 45px 40px', textAlign: 'left' }}>
+                        <a href={footerData.ctaLink} style={{ display: 'inline-block', padding: '12px 24px', backgroundColor: '#000000', color: '#ffffff', textDecoration: 'none', borderRadius: '4px', fontWeight: 'bold', fontSize: '14px', letterSpacing: '0.5px' }}>
                           {footerData.ctaText}
                         </a>
                       </td>
@@ -191,7 +201,7 @@ const App = () => {
                   {/* Signature Section */}
                   <tr>
                     <td style={{ padding: '0 40px' }}>
-                      <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px' }}>
+                      <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '18px' }}>
                         <table width="100%" cellPadding="0" cellSpacing="0">
                           <tbody>
                             <tr>
@@ -208,7 +218,7 @@ const App = () => {
                                 <div style={{ marginTop: '0px', fontSize: '11.5px', color: '#475569' }}>
                                   <a href={`mailto:${footerData.email}`} style={{ color: '#475569', textDecoration: 'none' }}>{footerData.email}</a>
                                   {footerData.email && footerData.phone && <span style={{ margin: '0 6px', color: '#cbd5e1' }}>|</span>}
-                                  {footerData.phone && <span>{footerData.phone}</span>}
+                                  {footerData.phone && <span style={{ color: '#475569' }}>{footerData.phone}</span>}
                                 </div>
                               </td>
                             </tr>
@@ -220,11 +230,11 @@ const App = () => {
 
                   {/* Footer Legal */}
                   <tr>
-                    <td style={{ padding: '30px 40px 40px 40px', fontSize: '10px', color: '#94a3b8', textAlign: 'center', lineHeight: '1.4' }}>
-                      <div style={{ marginBottom: '8px' }}>
-                        This email and any files transmitted with it are intended solely for the use of the individual or entity to whom they are addressed.
+                    <td style={{ padding: '35px 40px 45px 40px', fontSize: '10px', color: '#94a3b8', textAlign: 'center', lineHeight: '1.5', fontFamily: 'Arial, sans-serif' }}>
+                      <div style={{ marginBottom: '5px', opacity: '0.8' }}>
+                        This communication is intended solely for the use of the individual or entity to whom it is addressed.
                       </div>
-                      © 2026 Paramount Wireless USA. All rights reserved.
+                      <span style={{ fontWeight: 'bold', color: '#64748b' }}>© 2026 Paramount Wireless USA. All rights reserved.</span>
                     </td>
                   </tr>
                 </tbody>
