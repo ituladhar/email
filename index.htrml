@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramount Wireless Email Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Editor Panel -->
+        <div class="editor-panel">
+            <div class="card">
+                <div class="card-header">
+                    <span>New Draft</span>
+                    <div style="display: flex; gap: 12px; color: #5f6368;">
+                        <span style="cursor:pointer" onclick="execCmd('undo')" title="Undo">⟲</span>
+                        <span style="cursor:pointer" onclick="execCmd('redo')" title="Redo">⟳</span>
+                        <span>✕</span>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div id="editor" contenteditable="true">
+                        <div>Hello [Name],</div>
+                        <div><br></div>
+                        <div>I am reaching out to discuss a potential collaboration between our teams. We have been following your developments and believe there is a strong alignment between our current initiatives and your goals.</div>
+                        <ul>
+                            <li>Innovative wireless solutions</li>
+                            <li>Scalable partnership models</li>
+                        </ul>
+                        <div><br></div>
+                        <div>Would you have 10 minutes later this week for a brief introductory call?</div>
+                        <div><br></div>
+                        <div>Best regards,</div>
+                    </div>
+                </div>
+
+                <!-- Upgraded Clean Toolbar -->
+                <div class="gmail-bottom-bar">
+                    <button class="send-btn" id="copyBtn" onclick="copyToClipboard()">
+                        Copy for Outlook
+                    </button>
+                    
+                    <div class="formatting-tools">
+                        <select class="toolbar-select" onchange="execCmd('fontName', this.value)" style="width: 90px;">
+                            <option value="Arial">Sans Serif</option>
+                            <option value="Georgia">Serif</option>
+                            <option value="Courier New">Fixed Width</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                        <div class="divider"></div>
+                        <select class="toolbar-select" onchange="execCmd('fontSize', this.value)" style="width: 70px;">
+                            <option value="2">Small</option>
+                            <option value="3" selected>Normal</option>
+                            <option value="5">Large</option>
+                            <option value="7">Huge</option>
+                        </select>
+                        <div class="divider"></div>
+                        <button class="tool-btn" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+                        <button class="tool-btn" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+                        <button class="tool-btn" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+                        <button class="tool-btn" title="Text color" onclick="document.getElementById('colorInput').click()">
+                            <span style="border-bottom: 3px solid #1f1f1f; line-height: 1;">A</span>
+                            <input type="color" id="colorInput" style="display:none" onchange="execCmd('foreColor', this.value)">
+                        </button>
+                        
+                        <div class="divider"></div>
+                        
+                        <!-- Alignment -->
+                        <select class="toolbar-select" onchange="execCmd(this.value)" style="width: 45px;" title="Align">
+                            <option value="justifyLeft">≡</option>
+                            <option value="justifyCenter">≣</option>
+                            <option value="justifyRight">≡</option>
+                        </select>
+                        
+                        <!-- List Styles -->
+                        <select class="toolbar-select" onchange="handleListAction(this.value)" style="width: 45px;" title="Lists">
+                            <option value="">•≣</option>
+                            <option value="ul">Bullet</option>
+                            <option value="ol">Numbered</option>
+                            <option value="indent">⇥</option>
+                            <option value="outdent">⇤</option>
+                        </select>
+                        
+                        <div class="divider"></div>
+
+                        <button class="tool-btn" onclick="insertLink()" title="Insert Link">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M3.9,12c0-1.7,1.4-3.1,3.1-3.1h4V7H7c-2.8,0-5,2.2-5,5s2.2,5,5,5h4v-1.9H7C5.3,15.1,3.9,13.7,3.9,12z M8,13h8v-2H8V13z M17,7h-4v1.9h4c1.7,0,3.1,1.4,3.1,3.1s-1.4,3.1-3.1,3.1h-4V17h4c2.8,0,5-2.2,5-5S19.8,7,17,7z"/></svg>
+                        </button>
+
+                        <button class="tool-btn" onclick="execCmd('removeFormat')" title="Clear Formatting">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M6,14v-2.5l2-2.5l2,2.5V14h1V8H4v6H6z M16,8h-5v2h1.5v4h2v-4H16V8z M21,11v-1h-2v1H21z M18,11h2v-1h-2V11z M21,13h-3v1h3V13z"/></svg>
+                        </button>
+                    </div>
+
+                    <button class="tool-btn" onclick="clearEditor()" style="margin-left: auto;" title="Clear Editor">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M15,4V3H9v1H4v2h1v13c0,1.1,0.9,2,2,2h10c1.1,0,2-0.9,2-2V6h1V4H15z M17,19H7V6h10V19z M9,8h2v9H9V8z M13,8h2v9h-2V8z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="config-card">
+                <div class="config-title">Template Configuration</div>
+                
+                <!-- Signature Toggle & Fields -->
+                <div class="toggle-row" style="border-top: none; margin-top: 0; padding-top: 0;">
+                    <span style="font-size: 13px; color: #444746;">Include Professional Signature</span>
+                    <div class="switch active" id="sigToggle" onclick="toggleSignature()"></div>
+                </div>
+                <div id="signatureFields" class="form-grid">
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="sigName" value="Alex Sterling" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Title</label>
+                        <input type="text" id="sigTitle" value="Director of Business Development" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Phone</label>
+                        <input type="text" id="sigPhone" value="(555) 123-4567" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Market</label>
+                        <input type="text" id="sigMarket" value="Southeast Region" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Email</label>
+                        <input type="email" id="sigEmail" value="a.sterling@p-wireless.com" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- CTA Toggle & Fields -->
+                <div class="toggle-row">
+                    <span style="font-size: 13px; color: #444746;">Call to Action Button</span>
+                    <div class="switch active" id="ctaToggle" onclick="toggleCTA()"></div>
+                </div>
+                <div class="form-grid" id="ctaFields">
+                    <div class="input-group">
+                        <label>Button Label</label>
+                        <input type="text" id="ctaText" value="Schedule Discovery Call" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Link URL</label>
+                        <input type="text" id="ctaLink" value="https://www.paramountwirelessusa.com/  " oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Disclaimer Toggle & Fields -->
+                <div class="toggle-row">
+                    <span style="font-size: 13px; color: #444746;">Confidentiality Disclaimer</span>
+                    <div class="switch active" id="footerToggle" onclick="toggleFooter()"></div>
+                </div>
+                <div id="footerFields" class="input-group">
+                    <textarea id="footerDisclaimer" oninput="updatePreview()" rows="3" style="width: 100%;">This communication is intended solely for the addressee and may contain proprietary information. Unauthorized use, disclosure, or distribution is prohibited. If you received this in error, please notify the sender and delete the original message.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+            <div class="preview-chrome">
+                <div class="preview-banner">
+                    <span>Email Preview (Desktop Outlook)</span>
+                    <span style="color: #22c55e;">● Live</span>
+                </div>
+                <div id="email-preview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
